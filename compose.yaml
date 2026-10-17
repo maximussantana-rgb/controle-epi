@@ -1,0 +1,13 @@
+# O volume preserva os dados do SQLite mesmo se o contêiner for recriado.
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SQLITE_PATH: /app/data/db.sqlite3
+    volumes:
+      - dados_epi:/app/data
+
+volumes:
+  dados_epi:

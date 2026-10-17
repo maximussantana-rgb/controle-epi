@@ -1,0 +1,15 @@
+# Arquivos locais e segredos (não enviar para o GitHub)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+db.sqlite3
+db.sqlite3-*
+*.sqlite3-journal
+staticfiles/
+.pytest_cache/
+.vscode/
+.idea/
+.DS_Store

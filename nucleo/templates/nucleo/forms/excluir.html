@@ -1,0 +1,15 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}Excluir colaborador{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CADASTROS / COLABORADORES</span><h1>Remover colaborador</h1><p>Confirme a exclusão do cadastro.</p></div></div>
+<section class="panel form-panel delete-panel">
+    <div class="danger-icon" aria-hidden="true">!</div>
+    <h2>Deseja realmente excluir este colaborador?</h2>
+    <p>O cadastro de <strong>{{ colaborador.nome }}</strong> (ID #{{ colaborador.pk }}) e o telefone <strong>{{ colaborador.telefone }}</strong> serão removidos permanentemente.</p>
+    <p class="warning-text">Essa ação não poderá ser desfeita.</p>
+    <form method="post" action="{% url 'nucleo-excluir' colaborador.pk %}">
+        {% csrf_token %}
+        <div class="form-actions"><a href="{% url 'nucleo-inicial' %}" class="btn btn-secondary">Cancelar</a><button type="submit" class="btn btn-danger">Sim, excluir colaborador</button></div>
+    </form>
+</section>
+{% endblock %}

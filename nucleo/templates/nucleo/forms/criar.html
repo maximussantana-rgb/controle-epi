@@ -1,0 +1,13 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}Cadastrar colaborador{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CADASTROS / COLABORADORES</span><h1>Novo colaborador</h1><p>Preencha os dados abaixo para realizar o cadastro.</p></div></div>
+<section class="panel form-panel">
+    <div class="form-panel-header"><h2>Dados do colaborador</h2><p>Os campos com * são obrigatórios.</p></div>
+    <form method="post" action="{% url 'nucleo-salvar' %}">
+        {% csrf_token %}
+        {% include 'nucleo/forms/_campos.html' %}
+        <div class="form-actions"><a href="{% url 'nucleo-inicial' %}" class="btn btn-secondary">Ver colaboradores</a><button type="submit" class="btn btn-primary">Salvar colaborador</button></div>
+    </form>
+</section>
+{% endblock %}

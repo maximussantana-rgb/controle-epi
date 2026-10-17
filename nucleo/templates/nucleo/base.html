@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#173453">
+    <title>{% block titulo %}Colaboradores{% endblock %} | Controle de EPI</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar" aria-label="Menu principal">
+        <a class="brand" href="{% url 'nucleo-inicial' %}" aria-label="Controle de EPI - início">
+            <span class="brand-symbol">E</span>
+            <span><strong>Controle de EPI</strong><small>Gestão de colaboradores</small></span>
+        </a>
+        <nav class="sidebar-section" aria-label="Navegação de colaboradores">
+            <span class="nav-heading">COLABORADORES</span>
+            <a class="nav-link {% if request.resolver_match.url_name != 'nucleo-criar' and request.resolver_match.url_name != 'nucleo-salvar' %}active{% endif %}"
+               href="{% url 'nucleo-inicial' %}"
+               {% if request.resolver_match.url_name != 'nucleo-criar' and request.resolver_match.url_name != 'nucleo-salvar' %}aria-current="page"{% endif %}>
+                <span class="nav-icon" aria-hidden="true">▦</span> Listar colaboradores
+            </a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'nucleo-criar' or request.resolver_match.url_name == 'nucleo-salvar' %}active{% endif %}"
+               href="{% url 'nucleo-criar' %}"
+               {% if request.resolver_match.url_name == 'nucleo-criar' or request.resolver_match.url_name == 'nucleo-salvar' %}aria-current="page"{% endif %}>
+                <span class="nav-icon" aria-hidden="true">＋</span> Cadastrar colaborador
+            </a>
+        </nav>
+        <div class="sidebar-footer">Sistema de Controle de EPI</div>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <span class="topbar-breadcrumb">Home <span class="crumb-separator">/</span> Cadastros <span class="crumb-separator">/</span> <strong>Colaboradores</strong></span>
+            <span class="topbar-tag">Área administrativa</span>
+        </header>
+        <main class="main-content">
+            {% if messages %}
+            <div class="messages" aria-live="polite">
+                {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}" role="status">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% block conteudo %}{% endblock %}
+        </main>
+    </div>
+</div>
+</body>
+</html>
