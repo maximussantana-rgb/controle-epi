@@ -1,0 +1,15 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}Equipamentos{% endblock %}
+{% block breadcrumb %}Equipamentos{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CADASTROS</span><h1>Equipamentos de proteção</h1><p>Cadastre e gerencie os EPIs disponíveis para entrega.</p></div><a class="btn btn-primary" href="{% url 'equipamento-criar' %}">＋ Novo equipamento</a></div>
+<div class="summary"><div class="summary-icon" aria-hidden="true">▤</div><div><span class="summary-label">Total de equipamentos</span><strong class="summary-value">{{ total }}</strong></div><span class="summary-note">Cadastrados no sistema</span></div>
+<section class="panel" aria-label="Lista de equipamentos">
+ <div class="panel-header"><div><h2>Equipamentos cadastrados</h2><p>{{ quantidade }} resultado{{ quantidade|pluralize }} encontrado{{ quantidade|pluralize }}</p></div>
+ <form method="get" action="{% url 'equipamento-lista' %}" class="search-bar" role="search"><label for="busca" class="sr-only">Buscar por equipamento ou CA</label><input name="busca" id="busca" value="{{ busca }}" type="search" placeholder="Buscar nome ou CA..."><button class="btn btn-secondary" type="submit">Pesquisar</button>{% if busca %}<a href="{% url 'equipamento-lista' %}" class="clear-search">Limpar</a>{% endif %}</form></div>
+ <div class="table-wrap"><table><thead><tr><th>ID</th><th>EQUIPAMENTO</th><th>NÚMERO CA</th><th>DESCRIÇÃO</th><th class="actions-heading">AÇÕES</th></tr></thead>
+ <tbody>{% for equipamento in equipamentos %}<tr><td class="id-cell">#{{ equipamento.pk }}</td><td class="person-cell"><span class="avatar">E</span><strong>{{ equipamento.nome }}</strong></td><td>{{ equipamento.numero_ca|default:'—' }}</td><td>{{ equipamento.descricao|truncatechars:75|default:'—' }}</td><td class="action-cell"><a class="btn btn-edit" href="{% url 'equipamento-editar' equipamento.pk %}">Editar</a><a class="btn btn-delete" href="{% url 'equipamento-excluir' equipamento.pk %}">Excluir</a></td></tr>
+ {% empty %}<tr><td colspan="5" class="empty-state"><strong>Nenhum equipamento encontrado.</strong><p>Cadastre um EPI para começar.</p></td></tr>{% endfor %}</tbody></table></div>
+ <div class="panel-footer">Equipamentos com registros de entrega não podem ser excluídos, preservando o histórico.</div>
+</section>
+{% endblock %}

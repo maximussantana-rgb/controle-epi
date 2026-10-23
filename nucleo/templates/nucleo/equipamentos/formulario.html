@@ -1,0 +1,14 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}{% if editando %}Editar equipamento{% else %}Novo equipamento{% endif %}{% endblock %}
+{% block breadcrumb %}Equipamentos{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CADASTROS / EQUIPAMENTOS</span><h1>{% if editando %}Editar equipamento{% else %}Novo equipamento{% endif %}</h1><p>{% if editando %}Atualize os dados do equipamento cadastrado.{% else %}Registre um novo EPI para disponibilizar à equipe.{% endif %}</p></div></div>
+<section class="panel form-panel">
+ <div class="form-panel-header"><h2>Dados do equipamento {% if editando %}<span class="record-number">#{{ equipamento.pk }}</span>{% endif %}</h2><p>O nome é obrigatório. O CA e a descrição podem ficar vazios.</p></div>
+ <form method="post" action="{% if editando %}{% url 'equipamento-editar' equipamento.pk %}{% else %}{% url 'equipamento-criar' %}{% endif %}">{% csrf_token %}
+ {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+ {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}</label>{{ field }}{% if field.errors %}<div class="field-error" role="alert">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
+ <div class="form-actions"><a href="{% url 'equipamento-lista' %}" class="btn btn-secondary">{% if editando %}Cancelar{% else %}Ver equipamentos{% endif %}</a><button type="submit" class="btn btn-primary">{% if editando %}Salvar alterações{% else %}Salvar equipamento{% endif %}</button></div>
+ </form>
+</section>
+{% endblock %}

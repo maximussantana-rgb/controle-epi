@@ -1,26 +1,25 @@
-# Controle de EPI — CRUD de Colaboradores
+# Controle de EPI — Sistema Django
 
-Projeto Django baseado no código inicial `epi.rar`, com interface inspirada no wireframe da atividade.
+Atividade de Desenvolvimento de Sistemas: gerenciamento de **colaboradores**, **equipamentos de proteção individual (EPIs)** e **empréstimos / fornecimentos** de EPI.
 
-## Funcionalidades implementadas
+## Funcionalidades desta entrega
 
-- **Cadastrar** colaboradores com nome e telefone (validação de campos obrigatórios), com mensagem de sucesso ou erro. Após cadastrar, o usuário **permanece na tela de cadastro** com formulário limpo.
-- **Listar** colaboradores cadastrados, com ID, nome, telefone e ações.
-- **Pesquisar** por nome ou telefone.
-- **Editar** os dados do colaborador sem alterar seu ID.
-- **Excluir** com tela de confirmação. A exclusão só acontece ao confirmar pelo botão.
-- **Persistência no SQLite**: os dados são gravados no arquivo `db.sqlite3` e continuam após parar e reiniciar o servidor.
-- CSRF nos formulários, mensagens de sucesso e páginas 404 para registros inexistentes.
+- **Tela base:** menu lateral presente em todas as telas; nome e imagem ilustrativa de perfil fixos (não implementa autenticação, conforme enunciado).
+- **Colaboradores:** criar, listar, pesquisar por nome/telefone, editar e excluir com confirmação. Mostra sucesso/falha; cadastro mantém o formulário aberto após salvar.
+- **Equipamentos:** criar, listar/pesquisar, editar e excluir com confirmação. Campos: nome obrigatório, número do CA opcional e descrição opcional. Mostra sucesso/falha; cadastro permanece na mesma tela.
+- **Empréstimo de EPI:** entrega vinculada a colaborador e equipamento por chaves estrangeiras (ForeignKey). Data/hora de entrega preenchida automaticamente. Armazena previsão de devolução, data efetiva, observação e status.
+- **Status:** Emprestado, Fornecido, Devolvido, Danificado e Perdido. Ao criar, só é permitido Emprestado ou Fornecido. Ao atualizar, as cinco opções aparecem. Dados originais da entrega (colaborador, equipamento e datas iniciais) são exibidos em modo somente leitura e **não podem ser alterados pelo envio de um POST forjado**.
+- **Regras de data:** em *Emprestado*, previsão obrigatória e posterior ao momento atual; em *Fornecido*, data prevista é opcional porque o fornecimento é definitivo. Se preenchida, também precisa ser futura. Para *Devolvido* ou *Danificado*, data efetiva é obrigatória; para *Perdido*, pode ficar vazia. Campos de devolução só são exibidos nos três estados finais e são limpos ao voltar para Emprestado/Fornecido.
+- **Persistência:** SQLite local. Os registros sobrevivem a parar/reiniciar o servidor. Para preservar o histórico, colaboradores e equipamentos com entregas relacionadas não podem ser excluídos (on_delete=PROTECT).
+- **Relatórios:** **não implementados**, conforme a observação do enunciado (ficam para outra aula). A lista simples de entregas serve só para encontrar um registro e atualizar o status.
 
-Esta entrega apresenta apenas os menus **Listar colaboradores** e **Cadastrar colaborador**. As telas de equipamentos, empréstimos e relatórios não fazem parte do escopo de implementação desta etapa.
+## Executar no VS Code (Windows / PowerShell)
 
-## Executar no Windows (PowerShell ou terminal do VS Code)
-
-Abra um terminal na **pasta `epi` que contém `manage.py`**.
+Abra **a pasta `epi` contendo `manage.py`**:
 
 ```powershell
 py -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 py manage.py migrate
 py manage.py runserver
@@ -28,71 +27,52 @@ py manage.py runserver
 
 Acesse **http://127.0.0.1:8000/**.
 
-No Linux ou macOS, ative o ambiente com `source .venv/bin/activate` e use `python` no lugar de `py`.
+> Se o PowerShell bloquear a ativação do ambiente, não é preciso mudar a política do Windows: rode `.\.venv\Scripts\python.exe -m pip install -r requirements.txt` e `.\.venv\Scripts\python.exe manage.py migrate` e `.\.venv\Scripts\python.exe manage.py runserver`.
 
-**Importante:** O banco SQLite (`db.sqlite3`) é gerado localmente após `py manage.py migrate` e não acompanha a versão para GitHub, para evitar publicar dados pessoais. O arquivo `db.sqlite3` está no `.gitignore`. Depois de criá-lo, não apague esse arquivo se desejar manter os registros; reiniciar o servidor não apaga os dados.
+### Importante se você já tinha colaboradores cadastrados
 
-## Conferir persistência (item da avaliação)
+**Não apague o `db.sqlite3` da sua pasta de trabalho!** Copie os arquivos novos por cima dos antigos e execute `py manage.py migrate`. A migração `nucleo/migrations/0002_equipamento_emprestimo.py` cria as duas novas tabelas **sem apagar os colaboradores existentes**. Faça um backup do `db.sqlite3` antes de atualizar, por segurança.
 
-1. Rode o servidor com `py manage.py runserver`.
-2. Crie um colaborador. Confira a mensagem de sucesso e se continua na tela de cadastro. Clique em **Ver colaboradores** para conferir nome e telefone na lista.
-3. Encerre o servidor com **Ctrl+C**, execute o comando novamente e confira que o colaborador continua cadastrado.
-4. Edite o nome/telefone desse colaborador e salve. Reinicie o servidor e confira as alterações.
-5. Exclua o colaborador confirmando na tela. Reinicie o servidor e confira que ele continua ausente.
-
-**Por quê funciona?** No Django, `form.save()` (cadastro e edição) e `colaborador.delete()` (exclusão) executam operações no SQLite definido em `epi/settings.py`. Isso grava os dados no disco, em vez de armazenar a lista apenas na memória da aplicação.
+Para testar a persistência, cadastre equipamento, registre um empréstimo, encerre o servidor com `Ctrl+C`, rode `py manage.py runserver` novamente e confira os registros. Depois atualize um status e repita o processo.
 
 ## Testes automatizados
 
 ```powershell
 py manage.py test nucleo
+py manage.py check
+py manage.py makemigrations --check --dry-run
 ```
 
-Os testes usam um banco temporário isolado. A avaliação após reiniciar está descrita acima para você conferir manualmente com seu banco real.
+Os testes do Django usam um banco temporário e não afetam o banco local. No ambiente em que o pacote foi preparado, Django não pôde ser instalado por falta de acesso ao índice de pacotes; **execute estes comandos localmente e só entregue após validar os resultados**.
 
-## Arquivos principais
+## Arquivos importantes
 
-- `nucleo/models.py` — modelo `Colaborador` existente (nome e telefone).
-- `nucleo/forms.py` — validação de cadastro e edição.
-- `nucleo/views.py` — lógica de CRUD e pesquisa.
-- `nucleo/urls.py` — URLs de navegação e operações.
-- `nucleo/templates/nucleo/` — telas HTML com template base.
-- `nucleo/static/css/style.css` — visual e responsividade.
-- `db.sqlite3` — banco local gerado automaticamente com `migrate` (não versionado no GitHub).
-- `Dockerfile` e `compose.yaml` — exemplo de execução local com Docker e volume persistente.
+- `nucleo/models.py` — `Colaborador`, `Equipamento` e `Emprestimo`.
+- `nucleo/forms.py` — validações e restrições dos formulários.
+- `nucleo/views.py` — regras das telas e mensagens.
+- `nucleo/urls.py` — rotas.
+- `nucleo/migrations/0002_equipamento_emprestimo.py` — novas tabelas SQLite.
+- `nucleo/templates/nucleo/` — HTML de todas as telas e template base.
+- `nucleo/static/css/style.css`, `nucleo/static/js/emprestimo.js` — interface e exibição condicional.
+- `nucleo/tests.py` — testes de CRUD, datas e segurança dos campos de edição.
+
+## Enviar atualização ao GitHub
+
+Se já configurou o repositório `maximussantana-rgb/controle-epi`, **não use `git init` nem `git remote add` novamente**. Na pasta onde o Git já está inicializado:
+
+```powershell
+git status
+git add .
+git commit -m "Implementa CRUD de equipamentos e emprestimos de EPI"
+git push origin main
+```
+
+O arquivo `db.sqlite3`, o ambiente virtual `.venv`, arquivos `.env` e cache Python estão no `.gitignore` e não devem ser publicados com dados reais. Se o banco estiver versionado de antes, remova apenas do índice Git (`git rm --cached db.sqlite3`), sem apagar o arquivo local.
+
+## Docker (opcional)
+
+O `Dockerfile` monta o Python e executa o servidor Django; `compose.yaml` define um volume persistente para SQLite. Se tiver Docker Desktop instalado, execute `docker compose up --build` na pasta do projeto. O banco do Docker é independente do SQLite usado localmente. Não use `docker compose down -v` se quiser manter os dados no volume.
 
 ## Observações
 
-A chave de desenvolvimento e `DEBUG=True` são do projeto base. Antes de publicar o sistema na internet, configure chave secreta via ambiente, `DEBUG=False`, `ALLOWED_HOSTS`, usuários/permissões e HTTPS.
-
-
-## Controle de versão: entregar pelo GitHub
-
-Execute no terminal **dentro da pasta `epi`**, onde fica `manage.py`:
-
-```powershell
-git init
-git add .
-git commit -m "Implementa CRUD de colaboradores com persistencia SQLite"
-git branch -M main
-git remote add origin https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
-git push -u origin main
-```
-
-Antes de `git remote add origin`, crie um repositório **vazio** no GitHub, sem inicializar com README ou `.gitignore`, e substitua o endereço acima pelo endereço real do seu repositório. O Git pode solicitar que você configure seu nome e email e que faça login no GitHub. Em atualizações futuras, use `git add .`, `git commit -m "mensagem"` e `git push`.
-
-Para conferir os arquivos que serão publicados, execute `git status`. **Não publique** seu banco SQLite com dados pessoais, senhas, `.env` ou sua pasta `.venv`.
-
-## Pesquisa sobre Dockerfile (opcional na Etapa 2)
-
-O `Dockerfile` descreve uma imagem com **Python 3.12**, instala as dependências via `requirements.txt`, copia o projeto e configura a execução do Django. O arquivo `compose.yaml` permite executar o serviço e monta um **volume Docker** para os dados do SQLite. Sem volume, recriar o contêiner poderia fazer perder o banco gerado dentro dele.
-
-Instale o Docker Desktop e, na pasta do projeto, rode:
-
-```powershell
-docker compose up --build
-```
-
-Acesse http://127.0.0.1:8000/. Para parar, use Ctrl+C ou `docker compose down`. **Não execute `docker compose down -v`** se quiser preservar os cadastros, pois o `-v` apaga o volume do banco.
-
-O ambiente Docker usa o SQLite **no volume** `/app/data/db.sqlite3` (configurado por `SQLITE_PATH`), separado do `db.sqlite3` local. Isso é uma demonstração para a atividade: o servidor `runserver` não é adequado para disponibilizar o sistema na internet; em produção, é preciso configurar servidor web, autenticação, segurança e infraestrutura apropriados.
+Este projeto é uma atividade didática. Não há login e a foto de perfil é uma **ilustração estática**; substitua o arquivo `nucleo/static/img/perfil-usuario.svg` por uma foto autorizada, se desejar. Para publicar em produção são necessários controle de acesso, HTTPS, configurações seguras de chave/DEBUG/ALLOWED_HOSTS e servidor adequado (não usar `runserver` em produção).

@@ -1,0 +1,21 @@
+{% extends 'nucleo/base.html' %}
+{% load static %}
+{% block titulo %}Atualizar empréstimo{% endblock %}
+{% block breadcrumb %}Empréstimos{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CONTROLE DE EPI</span><h1>Atualizar status da entrega</h1><p>Registro #{{ emprestimo.pk }} — altere apenas o andamento da entrega.</p></div></div>
+<section class="panel form-panel form-panel-wide"><div class="form-panel-header"><h2>Dados originais da entrega</h2><p>Estes campos são somente leitura, inclusive no servidor.</p></div>
+ <div class="meta-list" aria-label="Informações originais, não editáveis">
+  <div><span class="meta-label">Colaborador</span><span class="meta-value">{{ emprestimo.colaborador.nome }}</span></div>
+  <div><span class="meta-label">Equipamento</span><span class="meta-value">{{ emprestimo.equipamento.nome }}</span></div>
+  <div><span class="meta-label">Data do empréstimo</span><span class="meta-value">{{ emprestimo.data_entrega|date:'d/m/Y H:i' }}</span></div>
+  <div><span class="meta-label">Data prevista da devolução</span><span class="meta-value">{{ emprestimo.data_prevista_devolucao|date:'d/m/Y H:i'|default:'Não se aplica' }}</span></div>
+ </div>
+ <form method="post" action="{% url 'emprestimo-editar' emprestimo.pk %}">{% csrf_token %}
+ {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+ {% for field in form %}<div class="field" {% if field.name == 'data_devolucao' or field.name == 'observacao_devolucao' %}data-campo-devolucao="true"{% endif %}>
+ <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="field-error" role="alert">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
+ <div class="form-actions"><a class="btn btn-secondary" href="{% url 'emprestimo-lista' %}">Cancelar</a><button class="btn btn-primary" type="submit">Salvar status</button></div></form>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/emprestimo.js' %}" defer></script>{% endblock %}

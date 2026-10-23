@@ -1,0 +1,14 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}Controle de EPI{% endblock %}
+{% block breadcrumb %}Empréstimos{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CONTROLE DE EPI</span><h1>Entregas de EPI</h1><p>Registre o fornecimento e acompanhe o status das entregas.</p></div><a class="btn btn-primary" href="{% url 'emprestimo-criar' %}">＋ Registrar entrega</a></div>
+<div class="summary"><div class="summary-icon" aria-hidden="true">↔</div><div><span class="summary-label">Entregas registradas</span><strong class="summary-value">{{ total }}</strong></div><span class="summary-note">Histórico preservado no banco de dados</span></div>
+<section class="panel" aria-label="Entregas registradas">
+ <div class="panel-header"><div><h2>Registros de empréstimo / fornecimento</h2><p>Para atualizar uma devolução, clique em “Atualizar status”.</p></div></div>
+ <div class="table-wrap"><table><thead><tr><th>ID</th><th>COLABORADOR</th><th>EQUIPAMENTO</th><th>ENTREGA</th><th>PREVISTA</th><th>STATUS</th><th class="actions-heading">AÇÃO</th></tr></thead>
+ <tbody>{% for emprestimo in emprestimos %}<tr><td class="id-cell">#{{ emprestimo.pk }}</td><td><strong>{{ emprestimo.colaborador.nome }}</strong></td><td>{{ emprestimo.equipamento.nome }}</td><td>{{ emprestimo.data_entrega|date:'d/m/Y H:i' }}</td><td>{{ emprestimo.data_prevista_devolucao|date:'d/m/Y H:i'|default:'—' }}</td><td><span class="status-pill status-{{ emprestimo.status }}">{{ emprestimo.get_status_display }}</span></td><td class="action-cell"><a class="btn btn-edit" href="{% url 'emprestimo-editar' emprestimo.pk %}">Atualizar status</a></td></tr>
+ {% empty %}<tr><td colspan="7" class="empty-state"><strong>Nenhuma entrega cadastrada.</strong><p>Cadastre primeiro um colaborador e um equipamento; depois registre a entrega.</p></td></tr>{% endfor %}</tbody></table></div>
+ <div class="panel-footer">Esta é uma lista operacional para atualizar status, não a tela de relatórios (que será criada em outra aula).</div>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'nucleo/base.html' %}
+{% block titulo %}Registrar entrega de EPI{% endblock %}
+{% block breadcrumb %}Empréstimos{% endblock %}
+{% block conteudo %}
+<div class="page-heading"><div><span class="eyebrow">CONTROLE DE EPI</span><h1>Registrar empréstimo de EPI</h1><p>Associe um equipamento ao colaborador selecionado.</p></div></div>
+<section class="panel form-panel form-panel-wide"><div class="form-panel-header"><h2>Dados da entrega</h2><p>A data e hora de entrega são registradas automaticamente ao salvar.</p></div>
+ <form method="post" action="{% url 'emprestimo-criar' %}">{% csrf_token %}
+ {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+ {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required or field.name == 'data_prevista_devolucao' %} <span class="required">*</span>{% endif %}</label>{{ field }}{% if field.help_text %}<span class="field-hint">{{ field.help_text }}</span>{% endif %}{% if field.errors %}<div class="field-error" role="alert">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
+ <div class="instruction">No cadastro, estão disponíveis apenas os status <strong>Emprestado</strong> e <strong>Fornecido</strong>. Para registrar devolução, dano ou perda, atualize o status depois.</div>
+ <div class="form-actions"><a href="{% url 'emprestimo-lista' %}" class="btn btn-secondary">Ver entregas</a><button class="btn btn-primary" type="submit">Salvar entrega</button></div></form>
+</section>
+{% endblock %}

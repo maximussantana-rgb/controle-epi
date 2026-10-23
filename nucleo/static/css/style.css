@@ -132,3 +132,28 @@ tbody tr:hover { background: #fcfdff; }
   .action-cell { min-width: 135px; }
   .form-panel { padding: 21px 17px; }
 }
+/* Etapa 3: módulos EPI e empréstimos. */
+.nav-heading-gap { margin-top: 18px; }
+.sidebar-user { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 6px 0; border-top: 1px solid #29445d; min-width: 0; }
+.user-photo { border-radius: 50%; width: 42px; height: 42px; border: 2px solid #7aa3c8; object-fit: cover; background: #7ba5c5; flex: none; }
+.sidebar-user span { min-width: 0; }
+.sidebar-user strong, .sidebar-user small { display: block; }
+.sidebar-user strong { font-size: 12px; color: #fff; }
+.sidebar-user small { font-size: 10px; color: #a5bcd1; line-height: 1.3; }
+textarea.form-control { min-height: 95px; resize: vertical; }
+select.form-control { appearance: auto; }
+.field-hint { display: block; color: #748399; font-size: 11px; margin-top: 6px; }
+.form-panel-wide { max-width: 770px; }
+.meta-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 18px 20px; background: #f6f9fc; border: 1px solid #e4eaf1; border-radius: 10px; margin-bottom: 24px; }
+.meta-label { display: block; color: #708196; font-size: 11px; }
+.meta-value { display: block; color: #26374b; font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.status-pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; background: #edf1f7; font-size: 11px; font-weight: 750; white-space: nowrap; }
+.status-emprestado { background: #eaf2fc; color: #2874a5; }
+.status-fornecido { background: #f3edfb; color: #7351a4; }
+.status-devolvido { background: #e7f7ef; color: #19784d; }
+.status-danificado { background: #fff0df; color: #9c571b; }
+.status-perdido { background: #ffe9ec; color: #aa3446; }
+.text-small { font-size: 12px; color: #748399; }
+.required-note { color: #748399; font-size: 12px; margin-bottom: 18px; }
+.instruction { background: #eef5fc; color: #3e647e; border-radius: 9px; padding: 12px 15px; font-size: 12px; margin-bottom: 22px; }
+@media (max-width: 640px) { .sidebar-user { margin-top: 12px; } .nav-heading-gap { margin-top: 0; } .meta-list { grid-template-columns: 1fr; } }

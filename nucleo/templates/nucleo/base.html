@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#173453">
-    <title>{% block titulo %}Colaboradores{% endblock %} | Controle de EPI</title>
+    <title>{% block titulo %}Gestão{% endblock %} | Controle de EPI</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -13,34 +13,36 @@
     <aside class="sidebar" aria-label="Menu principal">
         <a class="brand" href="{% url 'nucleo-inicial' %}" aria-label="Controle de EPI - início">
             <span class="brand-symbol">E</span>
-            <span><strong>Controle de EPI</strong><small>Gestão de colaboradores</small></span>
+            <span><strong>Controle de EPI</strong><small>Segurança do trabalho</small></span>
         </a>
-        <nav class="sidebar-section" aria-label="Navegação de colaboradores">
+        <nav class="sidebar-section" aria-label="Navegação">
             <span class="nav-heading">COLABORADORES</span>
-            <a class="nav-link {% if request.resolver_match.url_name != 'nucleo-criar' and request.resolver_match.url_name != 'nucleo-salvar' %}active{% endif %}"
-               href="{% url 'nucleo-inicial' %}"
-               {% if request.resolver_match.url_name != 'nucleo-criar' and request.resolver_match.url_name != 'nucleo-salvar' %}aria-current="page"{% endif %}>
-                <span class="nav-icon" aria-hidden="true">▦</span> Listar colaboradores
-            </a>
-            <a class="nav-link {% if request.resolver_match.url_name == 'nucleo-criar' or request.resolver_match.url_name == 'nucleo-salvar' %}active{% endif %}"
-               href="{% url 'nucleo-criar' %}"
-               {% if request.resolver_match.url_name == 'nucleo-criar' or request.resolver_match.url_name == 'nucleo-salvar' %}aria-current="page"{% endif %}>
-                <span class="nav-icon" aria-hidden="true">＋</span> Cadastrar colaborador
-            </a>
-        </nav>
-        <div class="sidebar-footer">Sistema de Controle de EPI</div>
-    </aside>
+            <a class="nav-link {% if request.resolver_match.url_name == 'nucleo-inicial' or request.resolver_match.url_name == 'nucleo-editar' or request.resolver_match.url_name == 'nucleo-excluir' %}active{% endif %}" href="{% url 'nucleo-inicial' %}"><span class="nav-icon" aria-hidden="true">▦</span> Listar colaboradores</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'nucleo-criar' or request.resolver_match.url_name == 'nucleo-salvar' %}active{% endif %}" href="{% url 'nucleo-criar' %}"><span class="nav-icon" aria-hidden="true">＋</span> Cadastrar colaborador</a>
 
+            <span class="nav-heading nav-heading-gap">EQUIPAMENTOS</span>
+            <a class="nav-link {% if request.resolver_match.url_name == 'equipamento-lista' or request.resolver_match.url_name == 'equipamento-editar' or request.resolver_match.url_name == 'equipamento-excluir' %}active{% endif %}" href="{% url 'equipamento-lista' %}"><span class="nav-icon" aria-hidden="true">▤</span> Listar equipamentos</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'equipamento-criar' %}active{% endif %}" href="{% url 'equipamento-criar' %}"><span class="nav-icon" aria-hidden="true">＋</span> Cadastrar equipamento</a>
+
+            <span class="nav-heading nav-heading-gap">CONTROLE DE EPI</span>
+            <a class="nav-link {% if request.resolver_match.url_name == 'emprestimo-lista' or request.resolver_match.url_name == 'emprestimo-editar' %}active{% endif %}" href="{% url 'emprestimo-lista' %}"><span class="nav-icon" aria-hidden="true">↔</span> Entregas registradas</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'emprestimo-criar' %}active{% endif %}" href="{% url 'emprestimo-criar' %}"><span class="nav-icon" aria-hidden="true">＋</span> Registrar empréstimo</a>
+        </nav>
+        <div class="sidebar-user">
+            <img class="user-photo" src="{% static 'img/perfil-usuario.svg' %}" width="42" height="42" alt="Foto ilustrativa do perfil do usuário">
+            <span><strong>Maximus Santana</strong><small>Usuário do sistema • Exibição estática</small></span>
+        </div>
+    </aside>
     <div class="main-area">
         <header class="topbar">
-            <span class="topbar-breadcrumb">Home <span class="crumb-separator">/</span> Cadastros <span class="crumb-separator">/</span> <strong>Colaboradores</strong></span>
+            <span class="topbar-breadcrumb">Controle de EPI <span class="crumb-separator">/</span> <strong>{% block breadcrumb %}Colaboradores{% endblock %}</strong></span>
             <span class="topbar-tag">Área administrativa</span>
         </header>
         <main class="main-content">
             {% if messages %}
             <div class="messages" aria-live="polite">
                 {% for message in messages %}
-                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}" role="status">{{ message }}</div>
+                <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'error' in message.tags %}alert-error{% else %}alert-info{% endif %}" role="status">{{ message }}</div>
                 {% endfor %}
             </div>
             {% endif %}
@@ -48,5 +50,6 @@
         </main>
     </div>
 </div>
+{% block scripts %}{% endblock %}
 </body>
 </html>
